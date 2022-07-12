@@ -6,9 +6,9 @@ import concat from 'gulp-concat';
 import uglify from 'gulp-uglify';
 import rename from 'gulp-rename';
 import cleanCSS from 'gulp-clean-css';
-import del from 'del';
 import autoprefixer from 'gulp-autoprefixer';
 import imagemin from 'gulp-imagemin';
+import del from 'del';
 
 const paths =  {
   styles: {
