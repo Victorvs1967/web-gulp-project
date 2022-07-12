@@ -14,6 +14,7 @@ import htmlmin from 'gulp-htmlmin'; // optimise html files
 import size from 'gulp-size'; // view files size
 import newer from 'gulp-newer'; // watch for newer files
 import browserSync from 'browser-sync'; // realtime html server
+import pug from 'gulp-pug'; // pug preprocessor
 
 // directories structure
 const paths =  {
@@ -32,9 +33,13 @@ const paths =  {
   html: {
     src: 'src/*.html',
     dest: 'dist/'
+  },
+  pug: {
+    src: 'src/*.pug'
   }
 };
 
+// Static Server
 const browser_sync = () => {
   browserSync.init({
     server: {
@@ -42,6 +47,17 @@ const browser_sync = () => {
     }
   });
 };
+
+const views = () => gulp.src(paths.pug.src)
+  .pipe(pug({
+    doctype: 'html',
+    pretty: true,
+  }))
+  .pipe(size({
+    showFiles: true
+  }))
+  .pipe(gulp.dest(paths.html.dest))
+  .pipe(browserSync.stream());
 
 // for styles 
 const sass = gulpSass(dartSass);
@@ -108,12 +124,13 @@ export const watch = () => {
   gulp.watch(paths.images.src, images);
   gulp.watch(paths.scripts.src, scripts);
   gulp.watch(paths.styles.src, styles);
-  gulp.watch(paths.html.src, html);
+  // gulp.watch(paths.html.src, html);
+  gulp.watch(paths.pug.src, views);
   browser_sync();
 };
 
 export const clean = async () => await del(['dist/*', '!dist/img']);
+export const build = gulp.series(clean, views, gulp.parallel(images, styles, scripts), watch);
+// export const build = gulp.series(clean, html, gulp.parallel(images, styles, scripts), watch);
 
-export const build = gulp.series(clean, html, gulp.parallel(images, styles, scripts));
-
-export default watch;
+export default build;
