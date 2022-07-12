@@ -11,6 +11,8 @@ import imagemin from 'gulp-imagemin'; // compress images
 import del from 'del'; // delete files
 import sourcemaps from 'gulp-sourcemaps'; // view source files
 import htmlmin from 'gulp-htmlmin'; // optimise html files
+import size from 'gulp-size'; // view files size
+import newer from 'gulp-newer'; // watch for newer files
 
 // directories structure
 const paths =  {
@@ -49,6 +51,9 @@ export const styles = () => gulp.src(paths.styles.src)
     suffix: '.min'
   }))
   .pipe(sourcemaps.write('./'))
+  .pipe(size({
+    showFiles: true
+  }))
   .pipe(gulp.dest(paths.styles.dest));
 
 // for scripts
@@ -60,18 +65,28 @@ export const scripts = () => gulp.src(paths.scripts.src)
   .pipe(uglify())
   .pipe(concat('main.min.js'))
   .pipe(sourcemaps.write('./'))
+  .pipe(size({
+    showFiles: true
+  }))
   .pipe(gulp.dest(paths.scripts.dest));
 
 export const images = () => gulp.src(paths.images.src)
+  .pipe(newer(paths.images.dest))
   .pipe(imagemin({
     progressive: true,
     optimizationLevel: 5
+  }))
+  .pipe(size({
+    showFiles: true
   }))
   .pipe(gulp.dest(paths.images.dest));
 
 export const html = () => gulp.src(paths.html.src)
   .pipe(htmlmin({
     collapseWhitespace: true
+  }))
+  .pipe(size({
+    showFiles: true
   }))
   .pipe(gulp.dest(paths.html.dest));
 
@@ -82,7 +97,7 @@ export const watch = () => {
   gulp.watch(paths.html.src, html);
 };
 
-export const clean = async () => await del(['dist']);
+export const clean = async () => await del(['dist/*', '!dist/img']);
 
 const build = gulp.series(clean, html, gulp.parallel(images, styles, scripts));
 
