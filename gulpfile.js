@@ -1,15 +1,16 @@
-import gulp from 'gulp';
-import gulpSass from 'gulp-sass';
-import dartSass from 'sass';
-import babel from 'gulp-babel';
-import concat from 'gulp-concat';
-import uglify from 'gulp-uglify';
-import rename from 'gulp-rename';
-import cleanCSS from 'gulp-clean-css';
-import autoprefixer from 'gulp-autoprefixer';
-import imagemin from 'gulp-imagemin';
-import del from 'del';
+import gulp from 'gulp'; // main gulp functions
+import gulpSass from 'gulp-sass'; // sass preprocessor for gulp
+import dartSass from 'sass'; // core sass preprocessor
+import babel from 'gulp-babel'; // babel preprocessor
+import concat from 'gulp-concat'; // concatenate files
+import uglify from 'gulp-uglify'; // optimise js files
+import rename from 'gulp-rename'; // rename files with options
+import cleanCSS from 'gulp-clean-css'; // remove trash from css files
+import autoprefixer from 'gulp-autoprefixer'; // add support old browsers
+import imagemin from 'gulp-imagemin'; // compress images
+import del from 'del'; // delete files
 
+// directories structure
 const paths =  {
   styles: {
     src: 'src/styles/**/*.sass',
@@ -25,6 +26,7 @@ const paths =  {
   }
 };
 
+// for styles 
 const sass = gulpSass(dartSass);
 
 export const styles = () => gulp.src(paths.styles.src)
@@ -39,6 +41,7 @@ export const styles = () => gulp.src(paths.styles.src)
   }))
   .pipe(gulp.dest(paths.styles.dest));
 
+// for scripts
 export const scripts = () => gulp.src(paths.scripts.src)
   .pipe(babel())
   .pipe(uglify())
