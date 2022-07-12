@@ -13,6 +13,7 @@ import sourcemaps from 'gulp-sourcemaps'; // view source files
 import htmlmin from 'gulp-htmlmin'; // optimise html files
 import size from 'gulp-size'; // view files size
 import newer from 'gulp-newer'; // watch for newer files
+import browserSync from 'browser-sync';
 
 // directories structure
 const paths =  {
@@ -32,6 +33,14 @@ const paths =  {
     src: 'src/*.html',
     dest: 'dist/'
   }
+};
+
+const browser_sync = () => {
+  browserSync.init({
+    server: {
+      baseDir: "dist/"
+    }
+  });
 };
 
 // for styles 
@@ -54,7 +63,9 @@ export const styles = () => gulp.src(paths.styles.src)
   .pipe(size({
     showFiles: true
   }))
-  .pipe(gulp.dest(paths.styles.dest));
+  .pipe(gulp.dest(paths.styles.dest))
+  .pipe(browserSync.stream());
+
 
 // for scripts
 export const scripts = () => gulp.src(paths.scripts.src)
@@ -68,7 +79,8 @@ export const scripts = () => gulp.src(paths.scripts.src)
   .pipe(size({
     showFiles: true
   }))
-  .pipe(gulp.dest(paths.scripts.dest));
+  .pipe(gulp.dest(paths.scripts.dest))
+  .pipe(browserSync.stream());
 
 export const images = () => gulp.src(paths.images.src)
   .pipe(newer(paths.images.dest))
@@ -79,7 +91,8 @@ export const images = () => gulp.src(paths.images.src)
   .pipe(size({
     showFiles: true
   }))
-  .pipe(gulp.dest(paths.images.dest));
+  .pipe(gulp.dest(paths.images.dest))
+  .pipe(browserSync.stream());
 
 export const html = () => gulp.src(paths.html.src)
   .pipe(htmlmin({
@@ -88,17 +101,19 @@ export const html = () => gulp.src(paths.html.src)
   .pipe(size({
     showFiles: true
   }))
-  .pipe(gulp.dest(paths.html.dest));
+  .pipe(gulp.dest(paths.html.dest))
+  .pipe(browserSync.stream());
 
 export const watch = () => {
   gulp.watch(paths.images.src, images);
   gulp.watch(paths.scripts.src, scripts);
   gulp.watch(paths.styles.src, styles);
   gulp.watch(paths.html.src, html);
+  browser_sync();
 };
 
 export const clean = async () => await del(['dist/*', '!dist/img']);
 
-const build = gulp.series(clean, html, gulp.parallel(images, styles, scripts));
+export const build = gulp.series(clean, html, gulp.parallel(images, styles, scripts));
 
-export default build;
+export default watch;
