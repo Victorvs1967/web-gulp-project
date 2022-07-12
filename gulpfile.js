@@ -35,7 +35,8 @@ const paths =  {
     dest: 'dist/'
   },
   pug: {
-    src: 'src/*.pug'
+    src: 'src/*.pug',
+    dest: 'src/'
   }
 };
 
@@ -56,8 +57,7 @@ const views = () => gulp.src(paths.pug.src)
   .pipe(size({
     showFiles: true
   }))
-  .pipe(gulp.dest(paths.html.dest))
-  .pipe(browserSync.stream());
+  .pipe(gulp.dest(paths.pug.dest));
 
 // for styles 
 const sass = gulpSass(dartSass);
@@ -124,13 +124,12 @@ export const watch = () => {
   gulp.watch(paths.images.src, images);
   gulp.watch(paths.scripts.src, scripts);
   gulp.watch(paths.styles.src, styles);
-  // gulp.watch(paths.html.src, html);
   gulp.watch(paths.pug.src, views);
+  gulp.watch(paths.html.src, html);
   browser_sync();
 };
 
-export const clean = async () => await del(['dist/*', '!dist/img']);
-export const build = gulp.series(clean, views, gulp.parallel(images, styles, scripts), watch);
-// export const build = gulp.series(clean, html, gulp.parallel(images, styles, scripts), watch);
+export const clean = async () => await del(['dist/**', '!dist/img']);
+export const build = gulp.series(clean, views, html, gulp.parallel(images, styles, scripts), watch);
 
 export default build;
