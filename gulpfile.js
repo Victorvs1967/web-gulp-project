@@ -13,7 +13,7 @@ import sourcemaps from 'gulp-sourcemaps'; // view source files
 import htmlmin from 'gulp-htmlmin'; // optimise html files
 import size from 'gulp-size'; // view files size
 import newer from 'gulp-newer'; // watch for newer files
-import browserSync from 'browser-sync';
+import browserSync from 'browser-sync'; // realtime html server
 
 // directories structure
 const paths =  {
