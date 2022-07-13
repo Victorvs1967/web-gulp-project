@@ -1,3 +1,2 @@
 const hello = str => console.log(str);
-
-hello('Hello, Gulp!');
+hello('Hello, Typescript with Js and Gulp!');
